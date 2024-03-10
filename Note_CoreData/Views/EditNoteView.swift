@@ -45,7 +45,3 @@ struct EditNoteView: View {
         }
     }
 }
-
-//#Preview {
-//    EditNoteView(entity: Note, viewModel: <#NoteViewModel#>)
-//}
