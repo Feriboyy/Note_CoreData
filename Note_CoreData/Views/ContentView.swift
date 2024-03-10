@@ -15,10 +15,10 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                SearchBar(text: $searchText) // Add a search bar
+                SearchBar(text: $searchText)
                 
                 List {
-                    ForEach(viewModel.filteredNotes(searchText: searchText)) { entity in // Use filteredNotes function to get filtered notes
+                    ForEach(viewModel.filteredNotes(searchText: searchText)) { entity in
                         VStack {
                             NavigationLink(destination: EditNoteView(entity: entity, viewModel: viewModel)) {
                                 VStack(alignment: .leading) {
@@ -39,11 +39,22 @@ struct ContentView: View {
                     }
                 }
                 .listStyle(.plain)
-                .toolbar {
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
                     NavigationLink(destination: EditNoteView(entity: nil, viewModel: viewModel)) {
                         Label("Add Note", systemImage: "plus")
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        viewModel.toggleSortType()
+                    }) {
+                        Image(systemName: viewModel.sortType == .ascending ? "arrow.up" : "arrow.down")
+                    }
+                }
+                
+                
             }
             .navigationTitle("My Notes")
         }

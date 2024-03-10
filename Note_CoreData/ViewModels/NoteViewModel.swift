@@ -11,26 +11,40 @@ import CoreData
 class NoteViewModel: ObservableObject {
     
     @Published var notes: [Note] = []
-    
-    var container = Persistence.shared.container
-    
-    init(){
-        self.fetchNotes()
-    }
-    
-    func fetchNotes(){
-        let request = NSFetchRequest<Note>(entityName: "Note")
-      
+        var container = Persistence.shared.container
         
-        do{
-            notes = try container.viewContext.fetch(request)
-            print("fetch sucsess")
-        } catch let error{
-            print("error fetching: \(error)")
+        // Add sorting options
+        enum SortType {
+            case ascending
+            case descending
+        }
+        var sortType: SortType = .ascending // Default sorting
+        
+        init(){
+            self.fetchNotes()
         }
         
-        
-    }
+        func fetchNotes(){
+            let request = NSFetchRequest<Note>(entityName: "Note")
+            
+            // Add sorting descriptor based on sortType
+            let sortDescriptor = NSSortDescriptor(key: "date", ascending: sortType == .ascending)
+            request.sortDescriptors = [sortDescriptor]
+            
+            do{
+                notes = try container.viewContext.fetch(request)
+                print("fetch success")
+            } catch let error{
+                print("error fetching: \(error)")
+            }
+        }
+
+        // Add function to toggle sorting type
+        func toggleSortType() {
+            sortType = sortType == .ascending ? .descending : .ascending
+            fetchNotes() // Re-fetch notes to apply sorting
+        }
+
     
     func addNote(title: String, content: String, date: Date){
        
