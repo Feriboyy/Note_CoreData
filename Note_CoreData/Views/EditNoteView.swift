@@ -23,7 +23,7 @@ struct EditNoteView: View {
                 TextField("Write a title", text: $title)
             }
             Section("Content") {
-                TextField("Write your content here", text: $content)
+                TextEditor(text: $content)
             }
         }
         .onAppear {
