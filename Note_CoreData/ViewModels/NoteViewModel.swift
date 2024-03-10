@@ -58,11 +58,6 @@ class NoteViewModel: ObservableObject {
         saveData()
     }
     
-//    func deletePerson2(entity: Person){
-//        container.viewContext.delete(entity)
-//        saveData()
-//    }
-    
     
     func saveData(){
         do {
@@ -72,6 +67,13 @@ class NoteViewModel: ObservableObject {
         }
         fetchNotes()
     }
+    
+    func dateFormatter() -> DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .short
+            return formatter
+        }
 
     
 }

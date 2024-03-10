@@ -9,7 +9,8 @@ import SwiftUI
 
 struct EditNoteView: View {
     
-    var entity: Note
+    var entity: Note? // Make entity optional
+    
     @ObservedObject var viewModel: NoteViewModel
     
     @State var title: String = ""
@@ -17,22 +18,31 @@ struct EditNoteView: View {
     
     
     var body: some View {
-        Form{
-            Section("Title"){
+        Form {
+            Section("Title") {
                 TextField("Write a title", text: $title)
             }
-            Section("Content"){
+            Section("Content") {
                 TextField("Write your content here", text: $content)
             }
-            Button("Save Changes") {
-                
-                if title.isEmpty || content.isEmpty {
-                    return
-                }
-                viewModel.updateNote(entity: entity, newTitle: title, newContent: content, newDate: Date())
+        }
+        .onAppear {
+            if let note = entity {
+                // If entity exists, populate fields with its data
+                title = note.title ?? ""
+                content = note.content ?? ""
             }
         }
-        
+        .onDisappear {
+            // Apply changes when the view disappears
+            if let note = entity {
+                viewModel.updateNote(entity: note, newTitle: title, newContent: content, newDate: Date())
+            }
+            // Add new note if entity is nil and both title and content are not empty
+            else if entity == nil, !title.isEmpty, !content.isEmpty {
+                viewModel.addNote(title: title, content: content, date: Date())
+            }
+        }
     }
 }
 

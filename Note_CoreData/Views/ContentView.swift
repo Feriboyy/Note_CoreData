@@ -10,24 +10,16 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var viewModel = NoteViewModel()
     
+    @State private var sortOrder = [SortDescriptor(\Note.date)]
+    @State private var searchText = ""
+    
     @State var title: String = ""
     @State var content: String = ""
     
     var body: some View {
-        NavigationView{
+        NavigationStack{
+            
             VStack {
-                TextField("title", text: $title)
-                    .padding()
-                
-                TextField("content", text: $content)
-                    .padding()
-                Button("Save"){
-                    addNote()
-                }
-                .padding()
-                .background(.blue)
-                .foregroundColor(.white)
-                .cornerRadius(20)
                 
                 List{
                     ForEach(viewModel.notes){ entity in
@@ -43,17 +35,16 @@ struct ContentView: View {
                                     Text(entity.content ?? "no content")
                                         .font(.subheadline)
                                         .lineLimit(1) // Limiting to one line for content
-                                    if let date = entity.date {
-                                                Text(date, style: .date)
-                                                    .font(.caption)
-                                                    .foregroundColor(.gray)
-                                            }
+                                    
+                                    Text("Modified: \(viewModel.dateFormatter().string(from: entity.date ?? Date()))")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                    
                                 }
                             }
                             
                         
                         }
-                        .padding()
                         .cornerRadius(10)
                             
                             
@@ -66,10 +57,16 @@ struct ContentView: View {
                     )
                 }
                 .listStyle(.plain)
+                .toolbar {
+                    NavigationLink(destination: EditNoteView(entity: nil, viewModel: viewModel)) {
+                        Label("Add Note", systemImage: "plus")
+                    }
+                }
                
             }
             .padding()
         }
+        .navigationTitle("My Notes")
         
     }
     
