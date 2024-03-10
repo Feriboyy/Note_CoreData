@@ -69,11 +69,22 @@ class NoteViewModel: ObservableObject {
     }
     
     func dateFormatter() -> DateFormatter {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-            formatter.timeStyle = .short
-            return formatter
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }
+    
+    func filteredNotes(searchText: String) -> [Note] {
+        if searchText.isEmpty {
+            return notes // Return all notes if search text is empty
+        } else {
+            return notes.filter { note in
+                return (note.title?.lowercased() ?? "").contains(searchText.lowercased()) ||
+                       (note.content?.lowercased() ?? "").contains(searchText.lowercased())
+            }
         }
+    }
 
     
 }

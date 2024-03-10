@@ -10,12 +10,15 @@ import SwiftUI
 struct ContentView: View {
     
     @StateObject var viewModel = NoteViewModel()
+    @State private var searchText = ""
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
+                SearchBar(text: $searchText) // Add a search bar
+                
                 List {
-                    ForEach(viewModel.notes) { entity in
+                    ForEach(viewModel.filteredNotes(searchText: searchText)) { entity in // Use filteredNotes function to get filtered notes
                         VStack {
                             NavigationLink(destination: EditNoteView(entity: entity, viewModel: viewModel)) {
                                 VStack(alignment: .leading) {
@@ -23,7 +26,7 @@ struct ContentView: View {
                                         .font(.headline)
                                     Text(entity.content ?? "no content")
                                         .font(.subheadline)
-                                        .lineLimit(1) // Limiting to one line for content
+                                        .lineLimit(1)
                                     Text("Modified at: \(viewModel.dateFormatter().string(from: entity.date ?? Date()))")
                                         .font(.caption)
                                         .foregroundColor(.gray)
@@ -42,7 +45,30 @@ struct ContentView: View {
                     }
                 }
             }
+            .navigationTitle("My Notes")
         }
+    }
+}
+
+// Add a SearchBar component
+struct SearchBar: View {
+    @Binding var text: String
+    
+    var body: some View {
+        HStack {
+            TextField("Search", text: $text)
+                .padding(8)
+                .padding(.horizontal, 24)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+                .padding(.horizontal, 8)
+                .onTapGesture {
+                    // Clear text when tapped
+                    text = ""
+                }
+            Spacer()
+        }
+        .padding(.top, 8)
     }
 }
 
