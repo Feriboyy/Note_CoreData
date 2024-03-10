@@ -41,20 +41,22 @@ struct ContentView: View {
                 .listStyle(.plain)
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    NavigationLink(destination: EditNoteView(entity: nil, viewModel: viewModel)) {
-                        Label("Add Note", systemImage: "plus")
-                    }
-                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        viewModel.toggleSortType()
-                    }) {
-                        Image(systemName: viewModel.sortType == .ascending ? "arrow.up" : "arrow.down")
+                    HStack {
+                        Button(action: {
+                            viewModel.toggleSortType()
+                        }) {
+                            Image(systemName: viewModel.sortType == .ascending ? "arrow.up" : "arrow.down")
+                                .font(.headline)
+                        }
+                        .padding()
+                        NavigationLink(destination: EditNoteView(entity: nil, viewModel: viewModel)) {
+                            Label("Add Note", systemImage: "plus")
+                                .font(.headline)
+                        }
                     }
+                    .padding(30)
                 }
-                
-                
             }
             .navigationTitle("My Notes")
         }
