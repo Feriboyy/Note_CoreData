@@ -33,7 +33,7 @@ class NoteViewModel: ObservableObject {
             
             do{
                 notes = try container.viewContext.fetch(request)
-                print("fetch success")
+                print("fetch successful")
             } catch let error{
                 print("error fetching: \(error)")
             }
@@ -99,6 +99,4 @@ class NoteViewModel: ObservableObject {
             }
         }
     }
-
-    
 }
