@@ -15,12 +15,23 @@ struct EditNoteView: View {
     
     @State var title: String = ""
     @State var content: String = ""
+    @State var selectedCategory: String = "General" // Default category
     
+    let categories = ["General", "Work", "School", "Family"] // Define available categories
     
     var body: some View {
         Form {
             Section("Title") {
                 TextField("Write a title", text: $title)
+            }
+            
+            Section("Category") {
+                Picker("Category", selection: $selectedCategory) {
+                    ForEach(categories, id: \.self) { category in
+                        Text(category)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
             }
             Section("Content") {
                 TextEditor(text: $content)
@@ -31,16 +42,17 @@ struct EditNoteView: View {
                 // If entity exists, populate fields with its data
                 title = note.title ?? ""
                 content = note.content ?? ""
+                selectedCategory = note.category ?? "General" // Set default category if category is nil
             }
         }
         .onDisappear {
             // Apply changes when the view disappears
             if let note = entity {
-                viewModel.updateNote(entity: note, newTitle: title, newContent: content, newDate: Date())
+                viewModel.updateNote(entity: note, newTitle: title, newContent: content, newDate: Date(), category: selectedCategory)
             }
             // Add new note if entity is nil and both title and content are not empty
             else if entity == nil, !title.isEmpty, !content.isEmpty {
-                viewModel.addNote(title: title, content: content, date: Date())
+                viewModel.addNote(title: title, content: content, date: Date(), category: selectedCategory)
             }
         }
     }

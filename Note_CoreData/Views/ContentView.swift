@@ -11,14 +11,34 @@ struct ContentView: View {
     
     @StateObject var viewModel = NoteViewModel()
     @State private var searchText = ""
+    @State private var selectedCategory = "All notes" // Default category
+    
+    var categories = ["All notes", "General", "Work", "School", "Family"] // Include "All notes" option
+    
+    var filteredNotes: [Note] {
+        if selectedCategory == "All notes" {
+            return viewModel.filteredNotes(searchText: searchText)
+        } else {
+            return viewModel.filteredNotes(searchText: searchText).filter { $0.category == selectedCategory }
+        }
+    }
     
     var body: some View {
         NavigationView {
             VStack {
                 SearchBar(text: $searchText)
                 
+                Picker("Category", selection: $selectedCategory) {
+                    ForEach(categories, id: \.self) { category in
+                        Text(category)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.horizontal)
+                .padding(.bottom)
+                
                 List {
-                    ForEach(viewModel.filteredNotes(searchText: searchText)) { entity in
+                    ForEach(filteredNotes) { entity in
                         VStack {
                             NavigationLink(destination: EditNoteView(entity: entity, viewModel: viewModel)) {
                                 VStack(alignment: .leading) {
@@ -40,6 +60,7 @@ struct ContentView: View {
                 }
                 .listStyle(.plain)
             }
+            .navigationTitle("My Notes")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack {
@@ -51,18 +72,16 @@ struct ContentView: View {
                         }
                         .padding()
                         NavigationLink(destination: EditNoteView(entity: nil, viewModel: viewModel)) {
-                            Label("Add Note", systemImage: "plus")
+                            Image(systemName: "plus")
                                 .font(.headline)
                         }
                     }
                     .padding(30)
                 }
             }
-            .navigationTitle("My Notes")
         }
     }
 }
-
 // Add a SearchBar component
 struct SearchBar: View {
     @Binding var text: String

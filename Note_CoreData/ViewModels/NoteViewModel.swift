@@ -46,21 +46,23 @@ class NoteViewModel: ObservableObject {
         }
 
     
-    func addNote(title: String, content: String, date: Date){
+    func addNote(title: String, content: String, date: Date, category: String){
        
         let newNote = Note(context: container.viewContext)
         newNote.title = title
         newNote.content = content
         newNote.date = date
+        newNote.category = category
        
         saveData()
         
     }
     
-    func updateNote(entity: Note, newTitle: String, newContent: String, newDate: Date){
+    func updateNote(entity: Note, newTitle: String, newContent: String, newDate: Date, category: String){
         entity.title = newTitle
         entity.content = newContent
         entity.date = newDate
+        entity.category = category
         
         saveData()
     }
