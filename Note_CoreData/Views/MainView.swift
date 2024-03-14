@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct MainView: View {
     
     @StateObject var viewModel = NoteViewModel()
     @State private var searchText = ""
@@ -105,5 +105,5 @@ struct SearchBar: View {
 }
 
 #Preview {
-    ContentView()
+    MainView()
 }
